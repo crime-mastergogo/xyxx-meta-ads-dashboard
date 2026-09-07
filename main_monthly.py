@@ -45,7 +45,7 @@ def fetch_all_ads(since, until, min_spend):
         "level": "ad",
         "fields": "ad_id,ad_name,adset_name,spend,purchase_roas,purchase_conversion_value,actions",
         "time_range": json.dumps({"since": since, "until": until}),
-        "action_attribution_windows": "['1d_click']",
+        "action_attribution_windows": json.dumps(["1d_click"]),
         "limit": 500,
         "access_token": TOKEN,
     }

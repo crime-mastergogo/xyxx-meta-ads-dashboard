@@ -53,7 +53,7 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
         "level": "ad",
         "fields": ",".join(fields),
         "time_range": json.dumps({"since": since, "until": until}),
-        "action_attribution_windows": "['1d_click']",
+        "action_attribution_windows": json.dumps(["1d_click"]),
         "limit": 500,
     }
 
