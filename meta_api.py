@@ -1,5 +1,6 @@
 """
 meta_api.py — Shared Meta Marketing API helpers.
+Uses the same API pattern as Meta's own MCP connector.
 """
 
 import os
@@ -32,18 +33,28 @@ def date_range(lookback_days):
 
 def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
     """
-    Pull ad-level insights using synchronous GET with filtering.
-    Keeps fields minimal to avoid 400 errors.
+    Pull ad-level insights.
+    Uses date_preset where possible, falls back to time_range with no spaces.
     """
     since, until = date_range(lookback_days)
+
+    # Map lookback days to Meta presets where possible
+    preset_map = {7: "last_7d", 14: "last_14d", 28: "last_28d", 30: "last_30d"}
+    date_preset = preset_map.get(lookback_days)
 
     params = {
         "level": "ad",
         "fields": "ad_id,ad_name,adset_name,spend,purchase_roas,purchase_conversion_value",
-        "time_range": json.dumps({"since": since, "until": until}, separators=(',', ':')),
-        "filtering": json.dumps([{"field": "spend", "operator": "GREATER_THAN", "value": "0"}], separators=(',', ':')),
         "limit": 500,
     }
+
+    # Use preset if available (simpler, no encoding issues)
+    # Otherwise use time_range with no spaces in JSON
+    if date_preset:
+        params["date_preset"] = date_preset
+    else:
+        # Compact JSON — no spaces
+        params["time_range"] = '{"since":"' + since + '","until":"' + until + '"}'
 
     results = []
     url = f"/{ACCOUNT_ID}/insights"
@@ -62,9 +73,6 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
             roas_list = row.get("purchase_roas", [])
             roas = float(roas_list[0]["value"]) if roas_list else 0.0
             cv = float(row.get("purchase_conversion_value", 0))
-
-            # Estimate purchases from conv_value / avg order value
-            # Will be overridden by actions pull if available
             purchases = round(cv / 999) if cv > 0 else 0
 
             results.append({
