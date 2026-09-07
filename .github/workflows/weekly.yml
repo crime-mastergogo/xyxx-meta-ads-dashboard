@@ -1,0 +1,56 @@
+name: Weekly Meta Ads Report
+
+on:
+  schedule:
+    # Every Monday 9:00 AM IST = 03:30 UTC
+    - cron: "30 3 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  weekly-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Pull statics data from Meta API
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_ACCOUNT_ID: ${{ secrets.META_ACCOUNT_ID }}
+        run: python main_statics.py
+
+      - name: Pull videos data from Meta API
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_ACCOUNT_ID: ${{ secrets.META_ACCOUNT_ID }}
+        run: python main_videos.py
+
+      - name: Generate statics dashboard
+        run: python generate_statics.py
+
+      - name: Generate videos dashboard
+        run: python generate_videos.py
+
+      - name: Generate weekly report + send Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python generate_weekly.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "xyxx-ads-bot"
+          git config user.email "actions@github.com"
+          git add data/ docs/
+          git diff --staged --quiet || git commit -m "Weekly report: $(date -u +%Y-W%W)"
+          git push
