@@ -40,8 +40,8 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
     params = {
         "level": "ad",
         "fields": "ad_id,ad_name,adset_name,spend,purchase_roas,purchase_conversion_value",
-        "time_range": json.dumps({"since": since, "until": until}),
-        "filtering": json.dumps([{"field": "spend", "operator": "GREATER_THAN", "value": "0"}]),
+        "time_range": json.dumps({"since": since, "until": until}, separators=(',', ':')),
+        "filtering": json.dumps([{"field": "spend", "operator": "GREATER_THAN", "value": "0"}], separators=(',', ':')),
         "limit": 500,
     }
 
