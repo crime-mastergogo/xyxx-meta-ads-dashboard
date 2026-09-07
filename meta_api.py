@@ -12,7 +12,7 @@ from collections import defaultdict
 
 TOKEN = os.environ["META_ACCESS_TOKEN"]
 ACCOUNT_ID = os.environ.get("META_ACCOUNT_ID", "act_1857340177852371")
-API_VERSION = "v19.0"
+API_VERSION = "v26.0"
 BASE = f"https://graph.facebook.com/{API_VERSION}"
 
 
