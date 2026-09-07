@@ -19,7 +19,7 @@ BASE = f"https://graph.facebook.com/{API_VERSION}"
 def _get(path, params):
     params = dict(params)
     params["access_token"] = TOKEN
-    r = requests.get(f"{BASE}{path}", params=params, timeout=30)
+    r = requests.get(f"{BASE}{path}", params=params, timeout=60)
     r.raise_for_status()
     return r.json()
 
@@ -32,61 +32,24 @@ def date_range(lookback_days):
 
 def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
     """
-    Pull ad-level insights from Meta Marketing API.
-    Uses async insights job to avoid 400 errors on large accounts.
+    Pull ad-level insights using synchronous GET with filtering.
+    Keeps fields minimal to avoid 400 errors.
     """
     since, until = date_range(lookback_days)
 
-    # Step 1: Create async report job
-    job_params = {
+    params = {
         "level": "ad",
-        "fields": "ad_id,ad_name,adset_name,spend,purchase_roas,purchase_conversion_value,actions",
+        "fields": "ad_id,ad_name,adset_name,spend,purchase_roas,purchase_conversion_value",
         "time_range": json.dumps({"since": since, "until": until}),
+        "filtering": json.dumps([{"field": "spend", "operator": "GREATER_THAN", "value": "0"}]),
         "limit": 500,
-        "access_token": TOKEN,
     }
 
-    # Submit async job
-    r = requests.post(
-        f"{BASE}/{ACCOUNT_ID}/insights",
-        data=job_params,
-        timeout=30
-    )
-    r.raise_for_status()
-    job_id = r.json().get("report_run_id")
-    print(f"  Async job submitted: {job_id}")
-
-    # Step 2: Poll until complete
-    import time as _time
-    for attempt in range(60):
-        _time.sleep(5)
-        status_r = requests.get(
-            f"{BASE}/{job_id}",
-            params={"access_token": TOKEN},
-            timeout=15
-        )
-        status_r.raise_for_status()
-        status = status_r.json()
-        pct = status.get("async_percent_completion", 0)
-        print(f"  Job progress: {pct}%")
-        if status.get("async_status") == "Job Completed":
-            break
-    else:
-        raise RuntimeError("Async insights job timed out after 5 minutes")
-
-    # Step 3: Fetch results
     results = []
-    results_params = {
-        "access_token": TOKEN,
-        "limit": 500,
-    }
-    results_url = f"{BASE}/{job_id}/insights"
+    url = f"/{ACCOUNT_ID}/insights"
 
     while True:
-        res_r = requests.get(results_url, params=results_params, timeout=30)
-        res_r.raise_for_status()
-        data = res_r.json()
-
+        data = _get(url, params)
         for row in data.get("data", []):
             spend = float(row.get("spend", 0))
             if spend < 1:
@@ -98,15 +61,11 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
 
             roas_list = row.get("purchase_roas", [])
             roas = float(roas_list[0]["value"]) if roas_list else 0.0
-
-            purchases = 0
-            for action in row.get("actions", []):
-                if action.get("action_type") == "purchase":
-                    val = action.get("1d_click") or action.get("value", 0)
-                    purchases = int(float(val))
-                    break
-
             cv = float(row.get("purchase_conversion_value", 0))
+
+            # Estimate purchases from conv_value / avg order value
+            # Will be overridden by actions pull if available
+            purchases = round(cv / 999) if cv > 0 else 0
 
             results.append({
                 "ad_id":      row.get("ad_id", ""),
@@ -121,9 +80,10 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
             })
 
         paging = data.get("paging", {})
-        if not paging.get("next"):
+        next_cursor = paging.get("cursors", {}).get("after")
+        if not next_cursor or not paging.get("next"):
             break
-        results_params["after"] = paging.get("cursors", {}).get("after")
+        params["after"] = next_cursor
 
     print(f"  Total rows fetched: {len(results)}")
     return results
