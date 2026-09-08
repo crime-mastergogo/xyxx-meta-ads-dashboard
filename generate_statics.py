@@ -301,6 +301,7 @@ def _is_video_ad(ad):
 
 def _daily_section(ads, categories_cfg, min_spend, label, qualification_spend):
     """Build Slack metrics from yesterday's ad-level data."""
+    from meta_api import categorise_ads
     filtered = [a for a in ads if a.get("spend", 0) >= min_spend]
     by_cat = categorise_ads(filtered, categories_cfg)
 
