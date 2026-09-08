@@ -37,9 +37,11 @@ jobs:
         run: python main_videos.py
 
       - name: Generate statics dashboard
-        run: python generate_statics.py
         env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_ACCOUNT_ID: ${{ secrets.META_ACCOUNT_ID }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python generate_statics.py
 
       - name: Generate videos dashboard
         run: python generate_videos.py
