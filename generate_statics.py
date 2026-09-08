@@ -8,6 +8,8 @@ import os
 import yaml
 from datetime import datetime
 
+from meta_api import fetch_ad_insights, consolidate_by_creative, categorise_ads
+
 BASE_DIR = os.path.dirname(__file__)
 INPUT_PATH = os.path.join(BASE_DIR, "data", "statics_daily.json")
 OUTPUT_PATH = os.path.join(BASE_DIR, "docs", "index.html")
@@ -290,68 +292,169 @@ def run():
     send_daily_slack(data, cfg)
 
 
+def _is_video_ad(ad):
+    """Match the same video identification rules used by main_videos.py."""
+    adset = ad.get("adset_name", "").lower()
+    name = ad.get("ad_name", "").lower()
+    if "video" in adset:
+        return True
+    return any(kw in name for kw in ["-video-", "_video_", "ugc-pa", "ugc-diy", "ugc-dark"])
+
+
+def _daily_section(ads, categories_cfg, min_spend, label, qualification_spend):
+    """Build Slack metrics from yesterday's ad-level data."""
+    filtered = [a for a in ads if a.get("spend", 0) >= min_spend]
+    by_cat = categorise_ads(filtered, categories_cfg)
+
+    total_spend = sum(a.get("spend", 0) for a in filtered)
+    total_cv = sum(a.get("conv_value", 0) for a in filtered)
+    blended_roas = total_cv / total_spend if total_spend > 0 else 0
+
+    # Best ROAS is only meaningful above the reporting-period spend threshold.
+    qualified = [a for a in filtered if a.get("spend", 0) >= qualification_spend]
+    best = max(qualified, key=lambda x: x.get("roas", 0)) if qualified else None
+    top_spend = max(filtered, key=lambda x: x.get("spend", 0)) if filtered else None
+
+    best_line = (
+        f"{short_name(best['ad_name'])[:42]} — {best['roas']:.2f}x · {fmt(best['spend'])} spend"
+        if best else f"No {label.lower()} crossed {fmt(qualification_spend)} spend"
+    )
+    top_line = (
+        f"{short_name(top_spend['ad_name'])[:42]} — {fmt(top_spend['spend'])} · {top_spend['roas']:.2f}x ROAS"
+        if top_spend else "N/A"
+    )
+
+    cat_lines = []
+    for cat, cat_data in list(by_cat.items())[:5]:
+        if cat == "Other":
+            continue
+        emoji = categories_cfg.get(cat, {}).get("emoji", "")
+        cat_spend = sum(a.get("spend", 0) for a in cat_data)
+        cat_cv = sum(a.get("conv_value", 0) for a in cat_data)
+        cat_roas = cat_cv / cat_spend if cat_spend > 0 else 0
+        cat_lines.append(f"{emoji} {cat[:22]} · {fmt(cat_spend)} · {cat_roas:.2f}x")
+
+    return {
+        "total_spend": total_spend,
+        "blended_roas": blended_roas,
+        "best_line": best_line,
+        "top_line": top_line,
+        "cat_text": "\n".join(cat_lines) or "N/A",
+    }
+
+
 def send_daily_slack(data, cfg):
-    """Send a lightweight daily Slack update with key numbers + links."""
+    """Send one combined Slack update using yesterday-only Meta data."""
     webhook = os.environ.get("SLACK_WEBHOOK_URL", "")
     if not webhook:
         print("[Daily Slack] No webhook configured, skipping.")
         return
 
     pages_base = cfg.get("pages_base_url", "")
-    categories = data.get("categories", {})
-    generated = data.get("generated_at", "")[:10]
-    lookback = data.get("lookback_days", 7)
+    daily_min_spend = cfg.get("slack", {}).get("daily_min_spend", 10000)
+    base_min_spend = cfg.get("min_spend", 500)
 
-    total_spend = sum(c["total_spend"] for c in categories.values())
-    total_cv    = sum(
-        sum(a["conv_value"] for a in c.get("top_ads", []))
-        for c in categories.values()
+    print("[Daily Slack] Pulling yesterday's ad insights...")
+    try:
+        daily_ads = fetch_ad_insights(lookback_days=1)
+        daily_ads = consolidate_by_creative(daily_ads)
+    except Exception as e:
+        print(f"[Daily Slack] Daily Meta pull failed: {e}")
+        return
+
+    # Split yesterday's data into statics and videos, while keeping the existing
+    # 7-day dashboard data completely untouched.
+    static_ads = [a for a in daily_ads if not _is_video_ad(a)]
+    video_ads = [a for a in daily_ads if _is_video_ad(a)]
+
+    static_metrics = _daily_section(
+        static_ads,
+        cfg.get("statics_categories", {}),
+        base_min_spend,
+        "Statics",
+        daily_min_spend,
     )
-    blended_roas = total_cv / total_spend if total_spend > 0 else 0
-
-    # Best static of the day
-    all_ads = [a for c in categories.values() for a in c.get("top_ads", [])]
-    best = max(all_ads, key=lambda x: x["roas"]) if all_ads else None
-    top_spend = max(all_ads, key=lambda x: x["spend"]) if all_ads else None
-
-    best_line = (
-        f"{short_name(best['ad_name'])[:42]} — {best['roas']:.2f}x ROAS"
-        if best else "N/A"
-    )
-    top_line = (
-        f"{short_name(top_spend['ad_name'])[:42]} — {fmt(top_spend['spend'])}"
-        if top_spend else "N/A"
+    video_metrics = _daily_section(
+        video_ads,
+        cfg.get("videos_categories", {}),
+        base_min_spend,
+        "Videos",
+        daily_min_spend,
     )
 
-    # Category breakdown (one line each)
-    cat_lines = []
-    for cat, cat_data in list(categories.items())[:5]:
-        emoji = cat_data.get("emoji", "")
-        cat_lines.append(
-            f"{emoji} {cat[:22]} · {fmt(cat_data['total_spend'])} · {cat_data['blended_roas']:.2f}x"
-        )
-    cat_text = "\n".join(cat_lines)
+    # Meta's date_range(1) represents yesterday; use the actual data date when available.
+    generated = (
+        daily_ads[0].get("date_until", "")
+        if daily_ads else (datetime.utcnow().date()).isoformat()
+    )
 
     payload = {
         "text": f"📅 XYXX Daily Update · {generated}",
         "blocks": [
-            {"type": "header", "text": {"type": "plain_text", "text": f"📅 XYXX Daily Update · {generated}"}},
-            {"type": "section", "fields": [
-                {"type": "mrkdwn", "text": f"*Statics Spend (last {lookback}d)*\n{fmt(total_spend)}"},
-                {"type": "mrkdwn", "text": f"*Blended ROAS*\n{blended_roas:.2f}x"},
-            ]},
-            {"type": "section", "fields": [
-                {"type": "mrkdwn", "text": f"*🏆 Best ROAS*\n{best_line}"},
-                {"type": "mrkdwn", "text": f"*💸 Top Spender*\n{top_line}"},
-            ]},
-            {"type": "section", "text": {"type": "mrkdwn", "text": f"*By Category:*\n{cat_text}"}},
-            {"type": "actions", "elements": [
-                {"type": "button", "text": {"type": "plain_text", "text": "Statics Dashboard →"},
-                 "url": f"{pages_base}/index.html"},
-                {"type": "button", "text": {"type": "plain_text", "text": "Videos Dashboard →"},
-                 "url": f"{pages_base}/videos.html"},
-            ]}
-        ]
+            {
+                "type": "header",
+                "text": {"type": "plain_text", "text": f"📅 XYXX Daily Update · {generated}"},
+            },
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": "*📊 STATICS — Yesterday*"},
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*Spend*\n{fmt(static_metrics['total_spend'])}"},
+                    {"type": "mrkdwn", "text": f"*Blended ROAS*\n{static_metrics['blended_roas']:.2f}x"},
+                ],
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*🏆 Best ROAS (≥ {fmt(daily_min_spend)})*\n{static_metrics['best_line']}"},
+                    {"type": "mrkdwn", "text": f"*💸 Top Spender*\n{static_metrics['top_line']}"},
+                ],
+            },
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": f"*By Category:*\n{static_metrics['cat_text']}"},
+            },
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": "*🎥 VIDEOS — Yesterday*"},
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*Spend*\n{fmt(video_metrics['total_spend'])}"},
+                    {"type": "mrkdwn", "text": f"*Blended ROAS*\n{video_metrics['blended_roas']:.2f}x"},
+                ],
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*🏆 Best ROAS (≥ {fmt(daily_min_spend)})*\n{video_metrics['best_line']}"},
+                    {"type": "mrkdwn", "text": f"*💸 Top Spender*\n{video_metrics['top_line']}"},
+                ],
+            },
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": f"*By Category:*\n{video_metrics['cat_text']}"},
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {"type": "plain_text", "text": "Statics Dashboard →"},
+                        "url": f"{pages_base}/index.html",
+                    },
+                    {
+                        "type": "button",
+                        "text": {"type": "plain_text", "text": "Videos Dashboard →"},
+                        "url": f"{pages_base}/videos.html",
+                    },
+                ],
+            },
+        ],
     }
 
     try:

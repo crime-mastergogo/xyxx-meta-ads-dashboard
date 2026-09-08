@@ -53,5 +53,8 @@ roas_thresholds:
 
 slack:
   channel: "#performance-reports"
+  daily_min_spend: 10000
+  weekly_min_spend: 100000
+  monthly_min_spend: 1000000
 
 pages_base_url: "https://crime-mastergogo.github.io/xyxx-meta-ads-dashboard"
