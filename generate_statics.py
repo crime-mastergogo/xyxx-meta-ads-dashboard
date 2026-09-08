@@ -8,8 +8,6 @@ import os
 import yaml
 from datetime import datetime
 
-from meta_api import fetch_ad_insights, consolidate_by_creative, categorise_ads
-
 BASE_DIR = os.path.dirname(__file__)
 INPUT_PATH = os.path.join(BASE_DIR, "data", "statics_daily.json")
 OUTPUT_PATH = os.path.join(BASE_DIR, "docs", "index.html")
@@ -356,6 +354,10 @@ def send_daily_slack(data, cfg):
 
     print("[Daily Slack] Pulling yesterday's ad insights...")
     try:
+        # Import only when the Slack/Meta pull is actually needed. This keeps
+        # the dashboard generator runnable in workflows that do not expose
+        # META_ACCESS_TOKEN.
+        from meta_api import fetch_ad_insights, consolidate_by_creative, categorise_ads
         daily_ads = fetch_ad_insights(lookback_days=1)
         daily_ads = consolidate_by_creative(daily_ads)
     except Exception as e:
