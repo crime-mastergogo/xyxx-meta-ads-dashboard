@@ -111,12 +111,16 @@ def build(data, cfg):
 
         # Add best ROAS if not in top 3
         if best_roas_ad and best_roas_ad["ad_name"] not in shown_names:
-            cards_html += f'<div class="mc" style="border:1px solid rgba(34,197,94,0.35);background:#0f1a0f;"><div class="badge sbadge">★ Best ROAS</div>{ad_card(best_roas_ad, cfg, True)[len("<div class='mc'>"):]}'
+            card = ad_card(best_roas_ad, cfg, True)
+            prefix = "<div class='mc'>"
+            cards_html += f'<div class="mc" style="border:1px solid rgba(34,197,94,0.35);background:#0f1a0f;"><div class="badge sbadge">★ Best ROAS</div>{card[len(prefix):]}'
             shown_names.add(best_roas_ad["ad_name"])
 
         # Add worst if not in shown
         if worst_roas_ad and worst_roas_ad["ad_name"] not in shown_names:
-            cards_html += f'<div class="mc" style="border:1px solid rgba(239,68,68,0.4);background:#180f0f;"><div class="badge wbadge">⚠ Lowest</div>{ad_card(worst_roas_ad, cfg, True)[len("<div class='mc'>"):]}'
+            card = ad_card(worst_roas_ad, cfg, True)
+            prefix = "<div class='mc'>"
+            cards_html += f'<div class="mc" style="border:1px solid rgba(239,68,68,0.4);background:#180f0f;"><div class="badge wbadge">⚠ Lowest</div>{card[len(prefix):]}'
 
         tab1 += f'''<div class="sec">
           <div class="sec-hdr">

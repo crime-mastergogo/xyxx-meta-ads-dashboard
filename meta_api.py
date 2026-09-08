@@ -88,15 +88,10 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
             })
 
         paging = data.get("paging", {})
-        next_url = paging.get("next")
         next_cursor = paging.get("cursors", {}).get("after")
-        if not next_cursor or not next_url:
+        if not next_cursor or not paging.get("next"):
             break
-
-        # Follow Meta's exact pagination URL rather than rebuilding the
-        # request with the cursor. This avoids 403 errors on some cursors.
-        url = next_url
-        params = {}
+        params["after"] = next_cursor
 
     print(f"  Total rows fetched: {len(results)}")
     return results
