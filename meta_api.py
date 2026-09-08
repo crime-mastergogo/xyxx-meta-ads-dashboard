@@ -21,7 +21,16 @@ def _get(path, params):
     params = dict(params)
     params["access_token"] = TOKEN
     r = requests.get(f"{BASE}{path}", params=params, timeout=60)
-    r.raise_for_status()
+    if not r.ok:
+        # Diagnostic only: keep the request itself unchanged, but expose
+        # Meta's actual error payload in GitHub Actions instead of only
+        # showing a generic HTTP 400/403.
+        try:
+            error_payload = r.json()
+        except ValueError:
+            error_payload = r.text
+        print(f"[Meta API] HTTP {r.status_code} error: {error_payload}")
+        r.raise_for_status()
     return r.json()
 
 
