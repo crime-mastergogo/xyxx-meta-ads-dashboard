@@ -193,10 +193,10 @@ body{{background:#0c0c0c;color:#e8e8e8;font-family:"Inter",sans-serif;}}
 .no-prev{{height:750px;display:flex;align-items:center;justify-content:center;color:#333;font-size:10px;}}
 .mm{{padding:9px 11px 11px;}}
 .mn{{font-size:11px;font-weight:600;color:#e0e0e0;line-height:1.3;margin-bottom:5px;}}
-.mmet{{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;padding-top:9px;border-top:1px solid #1e1e1e;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#888;}}
-.mmet span{{display:flex;flex-direction:column;gap:4px;min-width:0;padding:7px 8px;border:1px solid #242424;border-radius:6px;background:#111;}}
-.mmet b{{font-family:"Inter",sans-serif;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#777;white-space:nowrap;}}
-.mmet em{{font-style:normal;font-size:12px;font-weight:700;}}
+.mmet{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding-top:9px;border-top:1px solid #1e1e1e;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#888;}}
+.mmet span{{display:flex;flex-direction:column;gap:4px;min-width:0;padding:8px 9px;box-sizing:border-box;border:1px solid #242424;border-radius:6px;background:#111;}}
+.mmet b{{font-family:"Inter",sans-serif;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#777;white-space:normal;line-height:1.2;overflow-wrap:break-word;}}
+.mmet em{{font-style:normal;font-size:12px;font-weight:700;line-height:1.2;overflow-wrap:anywhere;}}
 .mmet strong{{font-size:12px;font-weight:700;color:#e8e8e8;}}
 @media (max-width: 1100px){{.cgrid{{grid-template-columns:repeat(2,minmax(0,1fr));}}}}
 @media (max-width: 700px){{.cgrid{{grid-template-columns:1fr;}}}}
