@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>XYXX Videos Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0c0c0c;color:#e8e8e8;font-family:"Inter",sans-serif;}
+.hdr{padding:20px 28px 0;border-bottom:1px solid #1e1e1e;}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;}
+.hdr-title{font-size:20px;font-weight:700;letter-spacing:-0.02em;}
+.hdr-sub{font-size:11px;color:#555;font-family:"JetBrains Mono",monospace;}
+.stats{display:flex;gap:28px;padding:14px 28px;border-bottom:1px solid #1e1e1e;flex-wrap:wrap;}
+.stat-l{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#444;margin-bottom:2px;}
+.stat-v{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;}
+.tabs{display:flex;padding:0 28px;}
+.tab{padding:10px 18px;font-size:12px;font-weight:500;color:#555;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab:hover{color:#aaa;}
+.tab.active{color:#e8e8e8;border-bottom-color:#3b82f6;}
+.tab-content{display:none;padding:24px 28px;}
+.tab-content.active{display:block;}
+.sec{margin-bottom:36px;}
+.sec-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1e1e1e;}
+.sec-t{font-size:15px;font-weight:600;}
+.sec-s{font-size:11px;color:#555;font-family:"JetBrains Mono",monospace;}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.mc{border-radius:10px;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+.badge{position:absolute;top:7px;left:7px;z-index:10;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;}
+.sbadge{background:rgba(34,197,94,0.9);color:#000;}
+.wbadge{background:rgba(239,68,68,0.9);color:#fff;}
+.mpw{background:#111;height:750px;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;}
+.mpw iframe{border:none;width:100%;height:750px;display:block;}
+.no-prev{height:750px;display:flex;align-items:center;justify-content:center;color:#333;font-size:10px;}
+.mm{padding:9px 11px 11px;}
+.mn{font-size:11px;font-weight:600;color:#e0e0e0;line-height:1.3;margin-bottom:5px;}
+.mmet{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;padding-top:6px;border-top:1px solid #1e1e1e;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#888;}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.filter-btn{padding:5px 12px;border-radius:16px;border:1px solid #2a2a2a;background:transparent;color:#666;font-size:11px;cursor:pointer;font-family:"Inter",sans-serif;transition:all 0.15s;}
+.filter-btn.active{background:#3b82f6;border-color:#3b82f6;color:#fff;}
+.nav-links{display:flex;gap:10px;}
+.nav-link{font-size:11px;color:#555;text-decoration:none;padding:4px 10px;border:1px solid #2a2a2a;border-radius:5px;}
+.nav-link:hover{color:#aaa;border-color:#555;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-row">
+    <div>
+      <div class="hdr-title">XYXX · Videos Dashboard</div>
+      <div class="hdr-sub">Last 7 days · Ranked by spend · 1D Click ROAS · Updated 2026-09-08</div>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">📷 Statics</a>
+      <a class="nav-link" href="weekly/">📊 Weekly</a>
+      <a class="nav-link" href="monthly/">📅 Monthly</a>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)">📊 Overview</div>
+    <div class="tab" onclick="switchTab(1)">🎬 All Videos</div>
+  </div>
+</div>
+<div class="stats">
+  <div><div class="stat-l">Total Spend</div><div class="stat-v">₹36.4L</div></div>
+  <div><div class="stat-l">Video Ads</div><div class="stat-v">344</div></div>
+  <div><div class="stat-l">Categories</div><div class="stat-v">2</div></div>
+  <div><div class="stat-l">Ranked by</div><div class="stat-v" style="font-size:13px;padding-top:3px">Spend · 1D Click ROAS</div></div>
+</div>
+<div class="tab-content active" id="tab0"><div class="sec">
+          <div class="sec-hdr">
+            <div>
+              <div class="sec-t">🩲 5-at-999 Cotton UW</div>
+              <div class="sec-s">343 ads · ₹36.2L · 3.26x blended ROAS · best 3.80x</div>
+            </div>
+          </div>
+          <div class="cgrid"><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQK-XDZBsIvkMTRtJ6vTQiLyIrMnNr2Bqpc1RHu_u4lUw6MoNJEssEZC-QULQEdAZejf03mF-oTsW6i8puYnqRcNpu9_JqVEzQkwSD__9Y2PFaGPA-YutGr2MiaJjP_Lr13UBu797HAy0DHo7E_Qd1ukUXBk0bBSavnUK7Y-aZiWNikQuCaIJbMkKlO17fqh6d-XLSSxr44kDvlDgBIcaOGCzXBPBv9bg5sfVDW0uFWCLexBHEIGfAKCs7eV2vOmoaQlf38RHSTVf9q2kaVEcWkbdj2OWrZJupt1t6mNkmUoLFsiL4u6eAu-M9OFNikSR9HGKteBWwvfTJOadMYgZaK5FW2IUTbaz0i4ft_dSZM53fz8dUmT3UEAFFRV4R0o_qe0FAAWqY1CmRGHjhB5AY32zyPJXc5h7cVLXRL4r4f2SlNLjFG2a6qtVwvjJ0J78yE&t=AQI4v5s3BMSloHZHY_8" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Mandar-Dichwalkar-Cotton-Underwear-5-at-999 · Direct</div>
+        <div class="mmet">
+          <span>₹2.1L</span>
+          <span style="color:#22c55e">2.85x</span>
+          <span>₹5.9L</span>
+          <span>588</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQIoe_fEYsT_qSyGz5o6XGnf0IDwFK_7xaCIgJq7o8uKzjcQpVjkWnWlf_bghPcn__lP8K4jhMhUuHga0ddtbdjgZuXm7XDpCuL7XISKkur6fkm8i06gvVGvBZwWNIwF45AIXyQ_JyWeTXWJAJv0Y4Bk2XhzXQIGEtWr2SHoC4p1zbNf5A53pAfCoyWiuAIBXxPZsYrsEZwVrmBkHrV8riqpTXDf-lJtXfLlIPwYuvqWyKtXRlwvM7Mirv8PJEJbUUpbU9rN_Ax730JZnKhLpG8vBHDFWKXvUFkewJb3gnKsF-BcUHM1mKge3c7R00IfA_whdL7YoyUKAlD42KuPmgAZq3bkfDFrUKQMoRvUS34OR7POlVioBjYE8VEiu1lM8I1ZxIgMbxcqJm8Vwjw6OX8BI3Q3QaR6IUHHX80W0QdSuMBMX7mXXxtlniZF0XcOCzM&t=AQJmBVv268OvidtAdy8" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Vansh-Mehra-Cotton-Underwear-5-at-999 · Barter</div>
+        <div class="mmet">
+          <span>₹1.8L</span>
+          <span style="color:#22c55e">2.95x</span>
+          <span>₹5.2L</span>
+          <span>517</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQJBCwqBdrKOV38G5QNvG6abQSRjESdudICMRg9T_WSHZw2mTv4-FxYNVRzYLPtm0n5gt2LpnIMXPndSH8eT_rzlb_MhIx8_bpX8LnV28L3eBA6gwB_hDMOQfqmx_IEMVyXHM2AXZhKs3EO78UJM7p7dgTnzOb1NUiEyzq4jSfFVDdPSC8vlKhPxIzOYriztd9P1HXqp6YoeuPfyWjX5v8Os9z5zjq859igHw-BiM4hlK9H0PkKKpMtshwkdKtfgyagOKtGQU8p_nOaRHs2WvzwZIbjXV2rk4m3vOcFZSBIHjtNN3l9EBkb4v7vPi7nZwcU7RXpYWq_3gKBiovT29zTyYybl9dMHg4o9kT7myoa-eDUkLKDcLKa06J86gQyX0RPAINY6ADjbiUYTUVmuHxtNaX-VZFqp0WFITUQ9LIXI_tk8sJ0ewAPH45jtz3N4oSc&t=AQKdsBGjvg6L30AOdeM" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Leave-my-Daughter-alone-Regional-Kurla-Cotton-Underwear</div>
+        <div class="mmet">
+          <span>₹1.5L</span>
+          <span style="color:#86efac">2.45x</span>
+          <span>₹3.7L</span>
+          <span>373</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid rgba(34,197,94,0.35);background:#0f1a0f;">
+      <div class="badge sbadge">★ Best ROAS</div>
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQJ52T12BQTLJXN5A5Onl6QwtVSpSGbY2SF_IHFYzJ9Xrme6AEbOFFLXK-xx981VrmGy4K6XU9RQum7AAmzRM8Ervijp-N0RX6OpQPZ0wJ8epcjWYe9SwyyZg-K6adLUHlHp24Mf6KmQ09CNV6xWLlbqqmwcQQ6jkhUPvDGVO1eSrHgx-FN1KG47FrL8cXNy86meYNbv3LZ4ZF0MctZ82nsJkjDQUNOD9y_8OE-GA8l7VLxbS6_-B2W5r7ttiwNkvjY4cRg09vjbdwZmKZNbWR_a9c1qljBhzdxRf_X3ISnKNPwuE-UPlA9QbVIYtsN7ZAceqAbezMQ1iwnYD-lRb6Gv8E0Ax_nJDoGF3Jr4f6rYgLrg-Y4Icmd4gDijr5M37ou_6mwFudYM0uT8I4mppLMJUwbPS0LFELScGRrlY-vmaZJifHPlf-vKXrs-MK7W7iI&t=AQLakBKaXeQJ4jfTYQs" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Yash-Acharya-Cotton-Underwear-5-at-999 · Sociopuff</div>
+        <div class="mmet">
+          <span>₹96K</span>
+          <span style="color:#22c55e">3.80x</span>
+          <span>₹3.7L</span>
+          <span>367</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid rgba(239,68,68,0.4);background:#180f0f;">
+      <div class="badge wbadge">⚠ Lowest</div>
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQJNZvuV6WkMhhlaEEZdhz1EMjGPDBgkdEJrp7suP_U_U9ACz2BGnlZ8LYhSQwIQ9GsbdBTJbsMO-adW01cPfH5mfJtmkmx2EXlXY5fXdOxwsoRmI8KHWVZrsUm7r5FxfSQ50OrvT8gQD_SKPvmsAFzs2Hw_U6Aib3h9uNDv-8KZpe5aUGIvYgYWRxKY2Qu80KISWY0Il6zouete4JGlnfakX_eUkIq53T5iDtSvO5dAqXk4803s26mFCgSHl7niuAE4UnJ663vbBcGP2NHImTgTxx62Ovo-7cBx6c3sR3XeWf7xlKnD9kgSQExLGaerKrH9PVTrMG3gIGTVwf4-pnlfkblIsWajOCC80TaWo0rIXlA6GAR6i_XP6ivAcl_6r4AOkEAlHYHhSG82r_OwqJRPH8CEqLBwSp_EUUIm9-J7dax9KwCTPbM0814xMCIZnx8&t=AQJC_BdiHE0I1eGh2Co" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Meet-Tanna-Boxer-2-at-699 · Direct</div>
+        <div class="mmet">
+          <span>₹95K</span>
+          <span style="color:#86efac">2.18x</span>
+          <span>₹2.1L</span>
+          <span>209</span>
+        </div>
+      </div>
+    </div></div>
+        </div><div class="sec">
+          <div class="sec-hdr">
+            <div>
+              <div class="sec-t">🎬 Innerwear (General)</div>
+              <div class="sec-s">1 ads · ₹21K · 3.40x blended ROAS · best 3.40x</div>
+            </div>
+          </div>
+          <div class="cgrid"><div class="mc" style="border:1px solid rgba(34,197,94,0.35);background:#0f1a0f;">
+      <div class="badge sbadge">★ Best ROAS</div>
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQLl2cJVab2Av-t7RzvBkdnCweuoBV1y8aGvFz089ijDprN-uFpjgWXjW3NCqbA8erokYn6HGAhqaj51H9kOh-OI8TpsjUPsn7Rko3F3FOMSuByNwoetNDiuA3dKet-JsKWlXOqlDngCGZj3Ut8agTb0ho7g78jbYOTT6WXbAAa9wzVAJ55E4h1h2kDEvTrO2VaLuP5Eu2e-9tyMviTOMkLjhTE7Q6Nih1I9k0P0xQNxyrtftiKK06pa2fYXEehQL-EqkusxBMzS8ROCO6ZYGDiqe8eAiRJzcWPfUiAys75SLaF-XVjv8QrX4a7E6jLoCUNZEG-2-flc2PwY8OkVoSLdollMroTGhBHGKs8zav_4frdtTwkhCTlCrzHi8un2wL7d5F1yvG0OAo-kPx9O-v50EFZUeEd0OSQHU2f-RB4D5iwYQVLmmG3lE_thaD9hlR4&t=AQLY7HmaxZHZ2NsEi5c" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Pros-TSQ-DPA-All-Modal-Innerwear-Carousel-With · DPA</div>
+        <div class="mmet">
+          <span>₹21K</span>
+          <span style="color:#22c55e">3.40x</span>
+          <span>₹73K</span>
+          <span>73</span>
+        </div>
+      </div>
+    </div></div>
+        </div></div>
+<div class="tab-content" id="tab1"><div class="filter-bar"><button class="filter-btn active" onclick="filterCat(this,'all')">All</button><button class="filter-btn" onclick="filterCat(this,'5-at-999 Cotton UW')">5-at-999 Cotton UW</button><button class="filter-btn" onclick="filterCat(this,'Innerwear (General)')">Innerwear (General)</button></div><div class="sec" data-cat="5-at-999 Cotton UW">
+          <div class="sec-hdr">
+            <div class="sec-t">🩲 5-at-999 Cotton UW</div>
+            <div class="sec-s">Top 10 by spend · ₹36.2L · 3.26x ROAS</div>
+          </div>
+          <div class="cgrid"><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQK-XDZBsIvkMTRtJ6vTQiLyIrMnNr2Bqpc1RHu_u4lUw6MoNJEssEZC-QULQEdAZejf03mF-oTsW6i8puYnqRcNpu9_JqVEzQkwSD__9Y2PFaGPA-YutGr2MiaJjP_Lr13UBu797HAy0DHo7E_Qd1ukUXBk0bBSavnUK7Y-aZiWNikQuCaIJbMkKlO17fqh6d-XLSSxr44kDvlDgBIcaOGCzXBPBv9bg5sfVDW0uFWCLexBHEIGfAKCs7eV2vOmoaQlf38RHSTVf9q2kaVEcWkbdj2OWrZJupt1t6mNkmUoLFsiL4u6eAu-M9OFNikSR9HGKteBWwvfTJOadMYgZaK5FW2IUTbaz0i4ft_dSZM53fz8dUmT3UEAFFRV4R0o_qe0FAAWqY1CmRGHjhB5AY32zyPJXc5h7cVLXRL4r4f2SlNLjFG2a6qtVwvjJ0J78yE&t=AQI4v5s3BMSloHZHY_8" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Mandar-Dichwalkar-Cotton-Underwear-5-at-999 · Direct</div>
+        <div class="mmet">
+          <span>₹2.1L</span>
+          <span style="color:#22c55e">2.85x</span>
+          <span>₹5.9L</span>
+          <span>588</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQIoe_fEYsT_qSyGz5o6XGnf0IDwFK_7xaCIgJq7o8uKzjcQpVjkWnWlf_bghPcn__lP8K4jhMhUuHga0ddtbdjgZuXm7XDpCuL7XISKkur6fkm8i06gvVGvBZwWNIwF45AIXyQ_JyWeTXWJAJv0Y4Bk2XhzXQIGEtWr2SHoC4p1zbNf5A53pAfCoyWiuAIBXxPZsYrsEZwVrmBkHrV8riqpTXDf-lJtXfLlIPwYuvqWyKtXRlwvM7Mirv8PJEJbUUpbU9rN_Ax730JZnKhLpG8vBHDFWKXvUFkewJb3gnKsF-BcUHM1mKge3c7R00IfA_whdL7YoyUKAlD42KuPmgAZq3bkfDFrUKQMoRvUS34OR7POlVioBjYE8VEiu1lM8I1ZxIgMbxcqJm8Vwjw6OX8BI3Q3QaR6IUHHX80W0QdSuMBMX7mXXxtlniZF0XcOCzM&t=AQJmBVv268OvidtAdy8" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Vansh-Mehra-Cotton-Underwear-5-at-999 · Barter</div>
+        <div class="mmet">
+          <span>₹1.8L</span>
+          <span style="color:#22c55e">2.95x</span>
+          <span>₹5.2L</span>
+          <span>517</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQJBCwqBdrKOV38G5QNvG6abQSRjESdudICMRg9T_WSHZw2mTv4-FxYNVRzYLPtm0n5gt2LpnIMXPndSH8eT_rzlb_MhIx8_bpX8LnV28L3eBA6gwB_hDMOQfqmx_IEMVyXHM2AXZhKs3EO78UJM7p7dgTnzOb1NUiEyzq4jSfFVDdPSC8vlKhPxIzOYriztd9P1HXqp6YoeuPfyWjX5v8Os9z5zjq859igHw-BiM4hlK9H0PkKKpMtshwkdKtfgyagOKtGQU8p_nOaRHs2WvzwZIbjXV2rk4m3vOcFZSBIHjtNN3l9EBkb4v7vPi7nZwcU7RXpYWq_3gKBiovT29zTyYybl9dMHg4o9kT7myoa-eDUkLKDcLKa06J86gQyX0RPAINY6ADjbiUYTUVmuHxtNaX-VZFqp0WFITUQ9LIXI_tk8sJ0ewAPH45jtz3N4oSc&t=AQKdsBGjvg6L30AOdeM" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Leave-my-Daughter-alone-Regional-Kurla-Cotton-Underwear</div>
+        <div class="mmet">
+          <span>₹1.5L</span>
+          <span style="color:#86efac">2.45x</span>
+          <span>₹3.7L</span>
+          <span>373</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQKMUxupDl10vc4exPVOssGxvO_x205RxD5VTls90_C55ag6d05zigVLwi3ttsQ9-6tcMlur1S4mL1mW3xhsW6jqmpegj40oR5ab3EYSSYaFjR2GqSwUZr2g6HrxKswkMy_-aZDCaqwB150v4DTOrNt-PjcnTwzBKd7rWrjWuIvpHjxPzX7CFt7BwYTPTPkT-xUHTqG6shR4QoZPUptfMEfuAZimBX3ZzRz5W0YtrWcqW6LnJrj9ldXdMnb4iHRkthURcZwk9TKHwHdIf24H-uTSkhiH3n_W8vfIEv6vnzuZB-SVQQ0J2AlI1den_DisXgj3-wM5HhGUzYLWTeyFuP7IAWLeKW9xDaR4p9_OFWbDWfKJGCWy8Uu59cOLKivOCS8rOYge3_72klcRxE9Ew5PEJ1rE8na0baRyi2T8OHL_3U1ceL2gNHnWIGisX3vFhS4&t=AQJ73R7H2gDezUCvZEc" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Rohan-Cotton-Underwear-5-at-999 · Hypedin</div>
+        <div class="mmet">
+          <span>₹1.4L</span>
+          <span style="color:#22c55e">2.75x</span>
+          <span>₹4.0L</span>
+          <span>397</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQKki7J45cOGU1_qZasO80HBU50I7hWnu-s5qP4ek2c4pegPVGe0JjJwyrlkpUkkS1wNxdvSmVNssYyhWYjT2gm1DTnLflvEeRnoZR7Hi2AzzzbGmCiIbEatm8GsRMt4enaZwN0p45uiTLJw2scnnBf6nxGg1xNVJ0kljpBOBheVdFIVtxNBCVX33hiZJuxDCQs7-29CxGiAQ-1Mj03vxd7JcS_1okzEnMgx0Xdhz4bIXNhcKZOUKkqMRREDFTSSlYILSTTlXZ8HYmFGr81G-jnxRekEq7vg8pRO6vbG8fsGFaUtz9xxySLu22aCdEh8W40QRsjYqlJ7IiNQQ6zme-tmiblRGLNpXVyP06CBNIS1P1C6q9pMSouX_41E-LUezmixjTNpZgSYwSzU8C3ajxj25XcahrPiojgyXHl81t8rCMl1Rxyx5AYDlcleSzwPVjs&t=AQKaTXMXgIh8Aftta_g" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Verun-Cotton-Underwear-5-at-999 · Dark-Post-V1-Fables</div>
+        <div class="mmet">
+          <span>₹1.3L</span>
+          <span style="color:#22c55e">2.58x</span>
+          <span>₹3.4L</span>
+          <span>339</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQKUH4y6b7Pb9wIxrG5RUnm6s8ZgDS3FdfyQStDYvNjSFnB-wGLibijt9Nk4l6n9CwHE0I3-jUomHpE2c4PclEaLt-Rg0a2KGpLqC2GhEZABEEgTaX33oMTz1r0OMVRtwdvExeFJuiiZbfHOXTwVZSCligZ-GlRil9bIswXBuzhq02xFWzIPb8sCjhPdlQ2ceBy7NMIchyfBcyIZZOTVpka718cGEyS3NAm815stx1Q4RYc2lSUc0pOb6qKspXpJ8E-1Od0uRK-O-Gx8IDylJX-Q9weq59Pa9sljI0LsGIgHpmq4MtlfXx7bkXaUSL-BaLuYAbjPs561qlS3Gm8-Mk_cUv0n3dp37lvuwYRni0GwXxudgyP3zYdhsyQm8jv5KlRpOerAFVD1-NSWzgyb1ShDCVQlH_0GnXA6NEJhDVUQ4N0zc18kxc1IuorUqq1O-Zc&t=AQL3XxFlAxRfGp06DSg" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Meet-Tanna-Cotton-Underwear-5-at-999 · Direct</div>
+        <div class="mmet">
+          <span>₹1.1L</span>
+          <span style="color:#22c55e">2.68x</span>
+          <span>₹2.9L</span>
+          <span>288</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQK_ME8jfVlWKK4-im59XNFSFrUg3vpDcOMmvzSkNPpsuocFkVAhkqf9VJ3Xs2J2jgSSoUvar7m2mOMnRuxZLkA2VprnTz4lcE9A21IhMMwaqvMfXRpgUW0J7jcuwflEc5M2VnUt9dX4k26cTOE5HWAdcsAZfm0DvOlOFt5Xu6T5CnOUk1xp55KcsavWOxmMr7A8po6WGg9tc9_fDzNb1T0BDSmZUwycdRU0fS-D-_e0BiHwKCnslnyNgjZAR55GlzBpLPSqXin_ZE1sgA6NrQDYY2IzLtF6NScMTURwv4l8yB0BwdBt6sp8o2TZAuUuWCvaOnFd6L_AA_v828OzBaEwPi_4wvtE0hIBpXLiWWNS5UHHZJ9qVfJ8oM-tpveYpndsk-MrWMLjB54A2RkC6USw1E1ukEHwix7spzRKXWNJAFUuCreebIB3sUJByCVyCOQ&t=AQL6poIt4Ri8HXGudNw" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Sameer-Sharma-Cotton-Underwear-5-at-999 · Dark-Post-DIY</div>
+        <div class="mmet">
+          <span>₹1.0L</span>
+          <span style="color:#86efac">2.48x</span>
+          <span>₹2.5L</span>
+          <span>254</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid #252525;background:#161616;">
+      
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQKWAobWw-zPaTMfjqsRJtcWnPjk0XU-NpT-wDWg98mgJdj0tbmo6suWiFchLLUJ3ePQYlTdJwJRuPTEnRP0LIUF5BBJ75bq9gia3aamwmtqc2z9aRWYY-HnOJNGjC9hokvIsqey62ZTRGrUEunvbHG1qzn38A41FVnks4-BQ6Rm_8DUkdssi-_VngdsTE_unmiTwLWV7KiNHm6QfaI4dYcYCDMcEDepUxjfOJpO41GsHZVcQxmQ68ZNrMhFQwRVkFyJiS5s1Uv41ExPV5TUoBrAyMDZQbyFL_RG-ShIiFGUtokY5WqENv0XAaT1DrhKZMyF1KPMTFt4Taio0rZLZaVg00b04SNAIcikKzbhaIQSwD-1e5_kGeAp279LpGzc7I7f7oOyZGkWoS63B4HMC6J4qvvxkopbEn048OgH5y-HmTLz0pB6NQHbL3Jj0QUhvvs&t=AQJ3_euUe_vBLeYrnGI" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Bhabik-Cotton-Underwear-5-at-999 · Direct</div>
+        <div class="mmet">
+          <span>₹97K</span>
+          <span style="color:#22c55e">3.32x</span>
+          <span>₹3.2L</span>
+          <span>321</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid rgba(34,197,94,0.35);background:#0f1a0f;">
+      <div class="badge sbadge">★ Best ROAS</div>
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQJ52T12BQTLJXN5A5Onl6QwtVSpSGbY2SF_IHFYzJ9Xrme6AEbOFFLXK-xx981VrmGy4K6XU9RQum7AAmzRM8Ervijp-N0RX6OpQPZ0wJ8epcjWYe9SwyyZg-K6adLUHlHp24Mf6KmQ09CNV6xWLlbqqmwcQQ6jkhUPvDGVO1eSrHgx-FN1KG47FrL8cXNy86meYNbv3LZ4ZF0MctZ82nsJkjDQUNOD9y_8OE-GA8l7VLxbS6_-B2W5r7ttiwNkvjY4cRg09vjbdwZmKZNbWR_a9c1qljBhzdxRf_X3ISnKNPwuE-UPlA9QbVIYtsN7ZAceqAbezMQ1iwnYD-lRb6Gv8E0Ax_nJDoGF3Jr4f6rYgLrg-Y4Icmd4gDijr5M37ou_6mwFudYM0uT8I4mppLMJUwbPS0LFELScGRrlY-vmaZJifHPlf-vKXrs-MK7W7iI&t=AQLakBKaXeQJ4jfTYQs" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Yash-Acharya-Cotton-Underwear-5-at-999 · Sociopuff</div>
+        <div class="mmet">
+          <span>₹96K</span>
+          <span style="color:#22c55e">3.80x</span>
+          <span>₹3.7L</span>
+          <span>367</span>
+        </div>
+      </div>
+    </div><div class="mc" style="border:1px solid rgba(239,68,68,0.4);background:#180f0f;">
+      <div class="badge wbadge">⚠ Lowest</div>
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQJNZvuV6WkMhhlaEEZdhz1EMjGPDBgkdEJrp7suP_U_U9ACz2BGnlZ8LYhSQwIQ9GsbdBTJbsMO-adW01cPfH5mfJtmkmx2EXlXY5fXdOxwsoRmI8KHWVZrsUm7r5FxfSQ50OrvT8gQD_SKPvmsAFzs2Hw_U6Aib3h9uNDv-8KZpe5aUGIvYgYWRxKY2Qu80KISWY0Il6zouete4JGlnfakX_eUkIq53T5iDtSvO5dAqXk4803s26mFCgSHl7niuAE4UnJ663vbBcGP2NHImTgTxx62Ovo-7cBx6c3sR3XeWf7xlKnD9kgSQExLGaerKrH9PVTrMG3gIGTVwf4-pnlfkblIsWajOCC80TaWo0rIXlA6GAR6i_XP6ivAcl_6r4AOkEAlHYHhSG82r_OwqJRPH8CEqLBwSp_EUUIm9-J7dax9KwCTPbM0814xMCIZnx8&t=AQJC_BdiHE0I1eGh2Co" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Meet-Tanna-Boxer-2-at-699 · Direct</div>
+        <div class="mmet">
+          <span>₹95K</span>
+          <span style="color:#86efac">2.18x</span>
+          <span>₹2.1L</span>
+          <span>209</span>
+        </div>
+      </div>
+    </div></div>
+        </div><div class="sec" data-cat="Innerwear (General)">
+          <div class="sec-hdr">
+            <div class="sec-t">🎬 Innerwear (General)</div>
+            <div class="sec-s">Top 1 by spend · ₹21K · 3.40x ROAS</div>
+          </div>
+          <div class="cgrid"><div class="mc" style="border:1px solid rgba(34,197,94,0.35);background:#0f1a0f;">
+      <div class="badge sbadge">★ Best ROAS</div>
+      <div class="mpw"><iframe src="https://business.facebook.com/ads/api/preview_iframe.php?d=AQLl2cJVab2Av-t7RzvBkdnCweuoBV1y8aGvFz089ijDprN-uFpjgWXjW3NCqbA8erokYn6HGAhqaj51H9kOh-OI8TpsjUPsn7Rko3F3FOMSuByNwoetNDiuA3dKet-JsKWlXOqlDngCGZj3Ut8agTb0ho7g78jbYOTT6WXbAAa9wzVAJ55E4h1h2kDEvTrO2VaLuP5Eu2e-9tyMviTOMkLjhTE7Q6Nih1I9k0P0xQNxyrtftiKK06pa2fYXEehQL-EqkusxBMzS8ROCO6ZYGDiqe8eAiRJzcWPfUiAys75SLaF-XVjv8QrX4a7E6jLoCUNZEG-2-flc2PwY8OkVoSLdollMroTGhBHGKs8zav_4frdtTwkhCTlCrzHi8un2wL7d5F1yvG0OAo-kPx9O-v50EFZUeEd0OSQHU2f-RB4D5iwYQVLmmG3lE_thaD9hlR4&t=AQLY7HmaxZHZ2NsEi5c" scrolling="yes" allow="autoplay" loading="lazy"></iframe></div>
+      <div class="mm">
+        <div class="mn">Pros-TSQ-DPA-All-Modal-Innerwear-Carousel-With · DPA</div>
+        <div class="mmet">
+          <span>₹21K</span>
+          <span style="color:#22c55e">3.40x</span>
+          <span>₹73K</span>
+          <span>73</span>
+        </div>
+      </div>
+    </div></div>
+        </div></div>
+<script>
+function switchTab(i){document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("active",i===j));document.querySelectorAll(".tab-content").forEach((t,j)=>t.classList.toggle("active",i===j));}
+function filterCat(btn,cat){document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll("#tab1 .sec").forEach(s=>{s.style.display=(cat==="all"||s.dataset.cat===cat)?"block":"none";});}
+</script>
+</body></html>
