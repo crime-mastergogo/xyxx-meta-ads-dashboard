@@ -188,9 +188,9 @@ body{{background:#0c0c0c;color:#e8e8e8;font-family:"Inter",sans-serif;}}
 .sbadge{{background:rgba(34,197,94,0.9);color:#000;}}
 .wbadge{{background:rgba(239,68,68,0.9);color:#fff;}}
 .mpw{{background:#111;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;}}
-.video-preview{{height:625px;}}
-.video-preview iframe{{border:none;width:100%;height:625px;display:block;overflow:hidden;}}
-.no-prev{{height:625px;display:flex;align-items:center;justify-content:center;color:#333;font-size:10px;}}
+.video-preview{{height:750px;}}
+.video-preview iframe{{border:none;width:100%;height:750px;display:block;overflow:hidden;}}
+.no-prev{{height:750px;display:flex;align-items:center;justify-content:center;color:#333;font-size:10px;}}
 .mm{{padding:9px 11px 11px;}}
 .mn{{font-size:11px;font-weight:600;color:#e0e0e0;line-height:1.3;margin-bottom:5px;}}
 .mmet{{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;padding-top:9px;border-top:1px solid #1e1e1e;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#888;}}
