@@ -48,7 +48,7 @@ def ad_card(ad, cfg, show_preview=True):
     roas_col = rc(ad["roas"], cfg)
     preview_html = ""
     if show_preview and ad.get("preview_url"):
-        preview_html = f'''<div class="mpw">
+        preview_html = f'''<div class="mpw static-preview">
           <iframe src="{ad['preview_url']}" scrolling="no" allow="autoplay" loading="lazy"></iframe>
         </div>'''
     else:
@@ -59,10 +59,10 @@ def ad_card(ad, cfg, show_preview=True):
       <div class="mm">
         <div class="mn">{sn}</div>
         <div class="mmet">
-          <span><b>Amount Spent</b>{fmt(ad["spend"])}</span>
+          <span><b>Amount Spent</b><strong>{fmt(ad["spend"])}</strong></span>
           <span><b>Blended ROAS</b><em style="color:{roas_col}">{ad["roas"]:.2f}x</em></span>
-          <span><b>Purchase Value</b>{fmt(ad["conv_value"])}</span>
-          <span><b>Units Sold</b>{ad["purchases"]:,}</span>
+          <span><b>Purchase Value</b><strong>{fmt(ad["conv_value"])}</strong></span>
+          <span><b>Units Sold</b><strong>{ad["purchases"]:,}</strong></span>
         </div>
       </div>
     </div>'''
@@ -193,20 +193,24 @@ body{{background:#0c0c0c;color:#e8e8e8;font-family:"Inter",sans-serif;}}
 .sec-hdr{{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1e1e1e;}}
 .sec-t{{font-size:15px;font-weight:600;}}
 .sec-s{{font-size:11px;color:#555;font-family:"JetBrains Mono",monospace;}}
-.cgrid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}}
+.cgrid{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}}
 .mc{{border-radius:10px;overflow:hidden;display:flex;flex-direction:column;position:relative;border:1px solid #252525;background:#161616;}}
 .badge{{position:absolute;top:7px;left:7px;z-index:10;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;}}
 .sbadge{{background:rgba(34,197,94,0.9);color:#000;}}
 .wbadge{{background:rgba(239,68,68,0.9);color:#fff;}}
-.mpw{{background:#111;aspect-ratio:1/1;overflow:hidden;display:flex;align-items:center;justify-content:center;}}
-.mpw iframe{{border:none;width:100%;height:100%;display:block;overflow:hidden;}}
-.no-prev{{height:100%;min-height:0;display:flex;align-items:center;justify-content:center;color:#333;font-size:10px;}}
+.mpw{{background:#111;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;}}
+.static-preview{{height:800px;}}
+.static-preview iframe{{border:none;width:100%;height:800px;display:block;overflow:hidden;}}
+.no-prev{{height:800px;display:flex;align-items:center;justify-content:center;color:#333;font-size:10px;}}
 .mm{{padding:9px 11px 11px;}}
 .mn{{font-size:11px;font-weight:600;color:#e0e0e0;line-height:1.3;margin-bottom:5px;}}
-.mmet{{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding-top:7px;border-top:1px solid #1e1e1e;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#888;}}
-.mmet span{{display:flex;flex-direction:column;gap:3px;min-width:0;}}
-.mmet b{{font-family:"Inter",sans-serif;font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:#555;white-space:nowrap;}}
-.mmet em{{font-style:normal;}}
+.mmet{{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;padding-top:9px;border-top:1px solid #1e1e1e;font-family:"JetBrains Mono",monospace;font-size:9.5px;color:#888;}}
+.mmet span{{display:flex;flex-direction:column;gap:4px;min-width:0;padding:7px 8px;border:1px solid #242424;border-radius:6px;background:#111;}}
+.mmet b{{font-family:"Inter",sans-serif;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#777;white-space:nowrap;}}
+.mmet em{{font-style:normal;font-size:12px;font-weight:700;}}
+.mmet strong{{font-size:12px;font-weight:700;color:#e8e8e8;}}
+@media (max-width: 1100px){{.cgrid{{grid-template-columns:repeat(2,minmax(0,1fr));}}}}
+@media (max-width: 700px){{.cgrid{{grid-template-columns:1fr;}}}}
 .filter-bar{{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}}
 .filter-btn{{padding:5px 12px;border-radius:16px;border:1px solid #2a2a2a;background:transparent;color:#666;font-size:11px;cursor:pointer;font-family:"Inter",sans-serif;transition:all 0.15s;}}
 .filter-btn.active{{background:#3b82f6;border-color:#3b82f6;color:#fff;}}
