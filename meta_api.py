@@ -21,6 +21,8 @@ def _get(path, params):
     params = dict(params)
     params["access_token"] = TOKEN
     r = requests.get(f"{BASE}{path}", params=params, timeout=60)
+    if not r.ok:
+        print(f"API Error {r.status_code}: {r.text}")
     r.raise_for_status()
     return r.json()
 
