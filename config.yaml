@@ -37,13 +37,13 @@ statics_categories:
 
 videos_categories:
   "5-at-999 Cotton UW":
-    adset_contains: ["Buy-5-at-999", "Video"]
+    adset_contains: ["Buy-5-at-999"]
     emoji: "🩲"
   "Innerwear (General)":
-    adset_contains: ["Innerwear", "Video"]
+    adset_contains: ["Innerwear"]
     emoji: "🎬"
   "Outerwear":
-    adset_contains: ["Outerwear", "Video"]
+    adset_contains: ["Outerwear"]
     emoji: "👔"
 
 roas_thresholds:

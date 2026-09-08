@@ -27,6 +27,16 @@ def load_config():
 def is_video(ad):
     adset = ad["adset_name"].lower()
     name = ad["ad_name"].lower()
+
+    # Reject obvious non-video creative types even when they sit inside a
+    # video-named ad set (e.g. DPA/carousel/static/catalog creatives).
+    non_video_markers = [
+        "dpa", "carousel", "static", "image", "catalog", "collection",
+    ]
+    if any(marker in name for marker in non_video_markers):
+        return False
+
+    # Existing naming conventions remain the primary video signals.
     if "video" in adset:
         return True
     if any(kw in name for kw in ["-video-", "_video_", "ugc-pa", "ugc-diy", "ugc-dark"]):
