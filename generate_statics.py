@@ -290,10 +290,6 @@ def run():
     send_daily_slack(data, cfg)
 
 
-if __name__ == "__main__":
-    run()
-
-
 def send_daily_slack(data, cfg):
     """Send a lightweight daily Slack update with key numbers + links."""
     webhook = os.environ.get("SLACK_WEBHOOK_URL", "")
@@ -366,4 +362,7 @@ def send_daily_slack(data, cfg):
     except Exception as e:
         print(f"[Daily Slack] Failed: {e}")
 
+
+if __name__ == "__main__":
+    run()
 
