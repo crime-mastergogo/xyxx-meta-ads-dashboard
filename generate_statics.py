@@ -104,7 +104,9 @@ def build(data, cfg):
             elif is_worst:
                 badge = '<div class="badge wbadge">⚠ Lowest</div>'
                 style = "border:1px solid rgba(239,68,68,0.4);background:#180f0f;"
-            cards_html += f'<div class="mc" style="{style}">{badge}{ad_card(ad, cfg, True)[len("<div class='mc'>"):]}'
+            card = ad_card(ad, cfg, True)
+            prefix = "<div class='mc'>"
+            cards_html += f'<div class="mc" style="{style}">{badge}{card[len(prefix):]}'
             shown_names.add(ad["ad_name"])
 
         # Add best ROAS if not in top 3
