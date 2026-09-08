@@ -21,8 +21,6 @@ def _get(path, params):
     params = dict(params)
     params["access_token"] = TOKEN
     r = requests.get(f"{BASE}{path}", params=params, timeout=60)
-    if not r.ok:
-        print(f"API Error {r.status_code}: {r.text}")
     r.raise_for_status()
     return r.json()
 
@@ -46,7 +44,7 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
 
     params = {
         "level": "ad",
-        "fields": "ad_id,ad_name,adset_name,spend,purchase_roas,purchase_conversion_value",
+        "fields": "ad_id,ad_name,adset_name,spend,website_purchase_roas,action_values",
         "limit": 500,
     }
 
@@ -72,9 +70,9 @@ def fetch_ad_insights(lookback_days=7, ad_name_prefix=None, extra_fields=None):
             if ad_name_prefix and not ad_name.startswith(ad_name_prefix):
                 continue
 
-            roas_list = row.get("purchase_roas", [])
+            roas_list = row.get("website_purchase_roas", [])
             roas = float(roas_list[0]["value"]) if roas_list else 0.0
-            cv = float(row.get("purchase_conversion_value", 0))
+            cv = sum(float(av.get("value", 0)) for av in row.get("action_values", []) if av.get("action_type") == "purchase")
             purchases = round(cv / 999) if cv > 0 else 0
 
             results.append({
